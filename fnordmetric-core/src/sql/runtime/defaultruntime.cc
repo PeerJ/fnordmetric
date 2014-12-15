@@ -60,6 +60,12 @@ DefaultRuntime::DefaultRuntime() {
       expressions::maxExprScratchpadSize(),
       &expressions::maxExprFree);
 
+  symbol_table_.registerSymbol(
+      "median",
+      &expressions::medianExpr,
+      expressions::medianExprScratchpadSize(),
+      &expressions::medianExprFree);
+
   /* expressions/boolean.h */
   symbol_table_.registerSymbol("eq", &expressions::eqExpr);
   symbol_table_.registerSymbol("neq", &expressions::neqExpr);

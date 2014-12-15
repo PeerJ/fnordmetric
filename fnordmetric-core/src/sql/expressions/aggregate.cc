@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <fnordmetric/sql/expressions/aggregate.h>
 #include <fnordmetric/sql/svalue.h>
+#include <math.h>
+#include <exception>
+#include <vector>
 
 namespace fnordmetric {
 namespace query {
@@ -197,6 +200,54 @@ void minExprFree(void* scratchpad) {
 
 size_t minExprScratchpadSize() {
   return sizeof(union min_expr_scratchpad);
+}
+
+/**
+ * MEDIAN() expression
+ */
+union median_expr_scratchpad {
+    std::vector<float> values;
+};
+
+void medianExpr(void* scratchpad, int argc, SValue* argv, SValue* out) {
+  SValue* val = argv;
+  union median_expr_scratchpad* data = (union median_expr_scratchpad*) scratchpad;
+
+  if (argc != 1) {
+    RAISE(
+        kRuntimeError,
+        "wrong number of arguments for median(). expected: 1, got: %i\n",
+        argc);
+  }
+
+  switch(val->getType()) {
+    case SValue::T_NULL:
+      return;
+
+    default:
+      try {
+        auto fval = val->getFloat();
+        data->values.insert(std::lower_bound(data->values.begin(), data->values.end(), fval), fval);
+        auto mid = data->values.size() / 2;
+        auto median = data->values.at(floor(mid));
+        if (data->values.size() % 2 == 0) {
+          median = (median + data->values.at(floor(mid) - 1)) / 2;
+        }
+        *out = SValue(median);
+      } catch (std::exception& e) {
+        RAISE(
+            kRuntimeError,
+            e.what());
+      }
+  }
+}
+
+void medianExprFree(void* scratchpad) {
+  /* noop */
+}
+
+size_t medianExprScratchpadSize() {
+  return sizeof(union median_expr_scratchpad);
 }
 
 }

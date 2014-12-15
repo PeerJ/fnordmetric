@@ -65,7 +65,8 @@ FnordMetric.util.MetricPreviewWidget = function(viewport, query_params) {
         value == "sum" || 
         value == "mean" ||
         value == "min" ||
-        value == "max") {
+        value == "max" ||
+        value == "median") {
 
       var time_window = query_params.t_window;
       if (time_window == undefined) {

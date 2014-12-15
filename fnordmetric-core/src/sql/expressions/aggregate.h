@@ -35,6 +35,10 @@ void maxExpr(void* scratchpad, int argc, SValue* argv, SValue* out);
 void maxExprFree(void* scratchpad);
 size_t maxExprScratchpadSize();
 
+void medianExpr(void* scratchpad, int argc, SValue* argv, SValue* out);
+void medianExprFree(void* scratchpad);
+size_t medianExprScratchpadSize();
+
 }
 }
 }
