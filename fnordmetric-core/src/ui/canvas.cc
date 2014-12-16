@@ -114,7 +114,7 @@ void Canvas::renderAxes(RenderTarget* target, Viewport* viewport) const {
       case AxisDefinition::BOTTOM: {
         bottom.emplace_back(std::get<2>(padding), axis.get());
         std::get<2>(padding) += kAxisPadding;
-        std::get<2>(padding) += axis->hasLabels() ? kAxisLabelHeight : 0;
+        std::get<2>(padding) += axis->hasLabels() ? kAxisLabelWidth : 0;
         std::get<2>(padding) += axis->hasTitle() ? kAxisTitleLength : 0;
         break;
       }
@@ -328,10 +328,11 @@ void Canvas::renderBottomAxis(
       target->drawText(
           label.second,
           tick_x,
-          height_ - bottom + kAxisLabelHeight * 0.5f,
+          height_ - bottom,
           "middle",
           "central",
-          "label");
+          "label",
+          270);
     }
   }
 
@@ -341,18 +342,18 @@ void Canvas::renderBottomAxis(
 
     target->drawLine(
         tick_x,
-        height_ - bottom,
+        height_ - bottom - kAxisLabelWidth * 0.5f,
         tick_x,
-        height_ - bottom - kTickLength,
+        height_ - bottom - kAxisLabelWidth * 0.5f - kTickLength,
         "tick");
   }
 
   /* draw stroke */
   target->drawLine(
       padding_left,
-      height_ - bottom,
+      height_ - bottom - kAxisLabelWidth * 0.5f,
       padding_left + inner_width,
-      height_ - bottom,
+      height_ - bottom - kAxisLabelWidth * 0.5f,
       "stroke");
 
   target->finishGroup();
